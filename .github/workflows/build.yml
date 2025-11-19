@@ -21,9 +21,19 @@ jobs:
           npm init -y
           npm install typescript --save-dev
 
-      - name: Compile with tsconfig
+      - name: Bundle with esbuild
         run: |
-          npx tsc
+          npm install esbuild --no-save
+          npx esbuild src/converter.ts \
+            --bundle \
+            --format=esm \
+            --platform=browser \
+            --target=es2022 \
+            --minify \
+            --sourcemap \
+            --outfile=dist/converter.bundle.js \
+            --define:process.env.NODE_ENV=\"production\" \
+            --banner:js="// SPDX-License-Identifier: GPL-3.0-or-later\n// Build: ${{ github.sha }} @ $(date -u '+%Y-%m-%d %H:%M:%S UTC')\n// Repo: https://github.com/siiway/subconverter-snippet"
 
       - id: inject_core
         name: Inject CORE_URL & Get Time
@@ -43,7 +53,7 @@ jobs:
           files: |
             src/snippet.js
             src/frontend.html
-            dist/converter.js
+            dist/converter.bundle.js
           draft: false
           prerelease: false
           body: |
@@ -54,8 +64,8 @@ jobs:
             ---
 
             - `snippet.js`: **上传到 Cloudflare Snippets 的 Snippet 文件**, 用于反代其他两个文件和提供 API 服务
-            - `frontend.html`: 配合 `converter.js` 使用的前端文件 *(需要有 `converter.js` 在同一目录下)*
-            - `converter.js`: 打包后的转换器核心逻辑
+            - `frontend.html`: 配合 `converter.bundle.js` 使用的前端文件 *(需要有 `converter.bundle.js` 在同一目录下)*
+            - `converter.bundle.js`: 打包后的转换器核心逻辑
 
             ---
 

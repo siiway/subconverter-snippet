@@ -7,7 +7,7 @@ var REPO = 'Repo-Placeholder';
 REPO = REPO === 'Repo' + '-Placeholder' ? 'siiway/subconverter-snippet' : REPO;
 
 var BASE_URL = `https://github.com/${REPO}/releases/download/latest`;
-var CORE_URL = `${BASE_URL}/converter.js`;
+var CORE_URL = `${BASE_URL}/converter.bundle.js`;
 var HTML_URL = `${BASE_URL}/frontend.html`;
 
 export default {
@@ -25,8 +25,8 @@ export default {
             });
         }
 
-        // 反代 converter.js
-        if (path === '/converter.js') {
+        // 反代 converter.bundle.js
+        if (path === '/converter.bundle.js') {
             const jsResp = await fetch(CORE_URL + '?v=' + Date.now());
             if (!jsResp.ok) return new Response(`JS load failed, code: ${jsResp.status}`, { status: 500 });
             return new Response(jsResp.body, {
