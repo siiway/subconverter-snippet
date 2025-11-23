@@ -17,17 +17,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 使用 pnpm 官方 action
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
-          cache: "npm"
+          node-version: 22
+          cache: pnpm
 
-      - name: Install Dependencies
+      # 安装依赖
+      - name: Install build tools
         run: |
-          npm init -y
-          npm install typescript esbuild @types/node --save-dev
+          pnpm i --frozen-lockfile
 
+      # 构建核心 JS
       - name: Build converter.bundle.js
         run: |
           npx esbuild src/converter.ts \
@@ -38,23 +46,21 @@ jobs:
             --minify \
             --sourcemap=inline \
             --outfile=dist/converter.bundle.js \
-            --banner:js="// Build: ${{ github.sha }} - Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC') - Repo: https://github.com/${{ github.repository }} - License: GPL-v3"
+            --banner:js="// SPDX-License-Identifier: GPL-3.0 - Build: ${{ github.sha }} - Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC') - Repo: https://github.com/${{ github.repository }}"
 
-      - name: Build frontend.html
+      # 复制 index.html
+      - name: Copy index.html
         run: |
           mkdir -p dist
           sed 's|./converter.bundle.js|/converter.bundle.js|g' src/frontend.html > dist/index.html
 
-      - name: Copy static assets (if any)
-        run: |
-          cp -r dist/*.js dist/ 2>/dev/null || true
-          cp src/converter.bundle.js dist/converter.bundle.js 2>/dev/null || true
-
-      - name: Upload GitHub Pages artifact
+      # 上传到 GitHub Pages
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist/
 
+      # 部署
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

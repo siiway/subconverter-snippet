@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: GPL-3.0
+// Original: https://github.com/clash-verge-rev/clash-verge-rev/blob/dev/src/types/types.d.ts
+// GitHub: https://github.com/siiway/subconverter-snippet
+// 本工具仅提供 URL 和 Clash Config 的配置文件格式转换，不存储任何信息，不提供任何代理服务，一切使用产生后果由使用者自行承担，SiiWay Team 及开发本工具的成员不负任何责任.
+
 // base
 interface IProxyBaseConfig {
   tfo?: boolean;
@@ -393,7 +398,6 @@ interface RealityOptions {
   "mldsa65-verify"?: string;
   ech?: string;
 }
-
 
 type ClashOutputMode = "proxies" | "payload" | "none";
 interface ConvertResult {
