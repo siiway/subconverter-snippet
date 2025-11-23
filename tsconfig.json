@@ -11,6 +11,7 @@
         "strict": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
+        "jsx": "react-jsx",
         "types": []
     },
     "include": [

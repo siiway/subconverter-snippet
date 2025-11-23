@@ -31,28 +31,14 @@ jobs:
           cache: pnpm
 
       # 安装依赖
-      - name: Install build tools
+      - name: Install dependencies
         run: |
           pnpm i --frozen-lockfile
 
-      # 构建核心 JS
-      - name: Build converter.bundle.js
+      # 构建 React 应用
+      - name: Build
         run: |
-          npx esbuild src/converter.ts \
-            --bundle \
-            --format=esm \
-            --platform=browser \
-            --target=es2022 \
-            --minify \
-            --sourcemap=inline \
-            --outfile=dist/converter.bundle.js \
-            --banner:js="// SPDX-License-Identifier: GPL-3.0 - Build: ${{ github.sha }} - Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC') - Repo: https://github.com/${{ github.repository }}"
-
-      # 复制 index.html
-      - name: Copy index.html
-        run: |
-          mkdir -p dist
-          cp src/frontend.html dist/index.html
+          pnpm build
 
       # 上传到 GitHub Pages
       - name: Upload artifact
