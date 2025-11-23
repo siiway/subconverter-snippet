@@ -15,6 +15,12 @@ import {
   makeStyles,
   shorthands,
   tokens,
+  Toast,
+  ToastTitle,
+  ToastBody,
+  Toaster,
+  useToastController,
+  useId,
 } from '@fluentui/react-components';
 import {
   ClipboardPasteRegular,
@@ -79,9 +85,13 @@ const useStyles = makeStyles({
   },
   textarea: {
     height: '400px',
+    width: '100%',
     ...shorthands.border('1px', 'solid', tokens.colorNeutralStroke1),
     ...shorthands.borderRadius(tokens.borderRadiusMedium),
     fontFamily: 'monospace',
+    '& > textarea': {
+      height: '100%',
+    },
   },
   controls: {
     display: 'flex',
@@ -122,6 +132,9 @@ function AppContent({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () 
   const [linksInput, setLinksInput] = useState('');
   const [outputMode, setOutputMode] = useState('proxies');
 
+  const toasterId = useId('toaster');
+  const { dispatchToast } = useToastController(toasterId);
+
   useEffect(() => {
     document.title = t('title');
   }, [t]);
@@ -142,7 +155,12 @@ function AppContent({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () 
   const handleCopy = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      // Could add a toast notification here
+      dispatchToast(
+        <Toast>
+          <ToastTitle>{t('copied')}</ToastTitle>
+        </Toast>,
+        { intent: 'success' }
+      );
     } catch (err) {
       console.error('Failed to write clipboard', err);
     }
@@ -256,7 +274,6 @@ function AppContent({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () 
             className={styles.actionButton}
             appearance="primary"
             size="large"
-            icon={<ArrowLeftRegular />}
             onClick={convertToClash}
           >
             {t('linkToClash')}
@@ -277,6 +294,7 @@ function AppContent({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () 
           </Text>
         </div>
       </footer>
+      <Toaster toasterId={toasterId} />
     </div>
   );
 }

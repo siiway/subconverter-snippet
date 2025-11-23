@@ -3,9 +3,9 @@
     "version": "1.0.0",
     "private": true,
     "author": {
-        "name": "wyf9",
-        "email": "wyf9@siiway.org",
-        "url": "https://github.com/wyf9"
+        "name": "SiiWay Team",
+        "email": "contact9@siiway.org",
+        "url": "https://github.com/siiway"
     },
     "scripts": {
         "dev": "vite",
